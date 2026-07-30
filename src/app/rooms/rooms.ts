@@ -1,8 +1,9 @@
-import { AfterViewChecked, AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, ChangeDetectionStrategy, Component, Host, OnInit, QueryList, Self, SkipSelf, ViewChild, ViewChildren } from '@angular/core';
 import { Room, RoomList } from './roomsInterface';
 import { RoomsList } from './rooms-list/rooms-list';
 import { JsonPipe } from '@angular/common';
 import { Header } from "../header/header";
+import { RoomsService } from './services/rooms-service';
 
 @Component({
   selector: 'app-rooms',
@@ -10,9 +11,11 @@ import { Header } from "../header/header";
   standalone: true,
   styleUrl: './rooms.scss',
   imports: [RoomsList, JsonPipe, Header],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Rooms implements OnInit, AfterViewInit, AfterViewChecked {
+export class Rooms implements OnInit {
+  constructor(@SkipSelf() private roomsService: RoomsService){
+
+  }
   hotelName: String = 'Hilton hotel';
   numberOfRooms: Number = 10;
 
@@ -28,8 +31,10 @@ export class Rooms implements OnInit, AfterViewInit, AfterViewChecked {
 
   roomList: RoomList[] = [];
 
-  @ViewChild(Header, {static: true})
-  headerComponent!: Header;
+  // @ViewChild(Header, {static: true})
+  // headerComponent!: Header;
+
+  // @ViewChildren(Header) headerChildrenComponent!: QueryList<Header>
 
 
   title = "Room List"
@@ -40,31 +45,12 @@ export class Rooms implements OnInit, AfterViewInit, AfterViewChecked {
   }
 
   ngOnInit(): void {
-    console.log(this.headerComponent)
+    this.roomsService.getRooms().subscribe(rooms=>{
+      this.roomList = rooms
+    })
 
-
-    this.roomList = [
-      {
-        roomNumber: 1,
-        roomType: 'Deluxe Room',
-        amenities: 'Air Conditioner, Free Wi-Fi, TV, Mini Bar',
-        price: 2000,
-        photos:
-          'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aG90ZWwlMjByb29tfGVufDB8fDB8fA%3D%3D&w=1000&q=80',
-        checkinTime: new Date('2023-01-01'),
-        checkoutTime: new Date('2023-01-02'),
-      },
-      {
-        roomNumber: 2,
-        roomType: 'Standard Room',
-        amenities: 'Air Conditioner, Free Wi-Fi, TV',
-        price: 1500,
-        photos:
-          'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aG90ZWwlMjByb29tfGVufDB8fDB8fA%3D%3D&w=1000&q=80',
-        checkinTime: new Date('2023-01-01'),
-        checkoutTime: new Date('2023-01-02'),
-      },
-    ];
+    console.log(this.roomList)
+    
   }
 
   selectRoom(room: RoomList) {
@@ -73,7 +59,7 @@ export class Rooms implements OnInit, AfterViewInit, AfterViewChecked {
 
   addRoom() {
     const room: RoomList = {
-      roomNumber: 4,
+      roomNumber: "4",
       roomType: 'Deluxe Room',
       amenities: 'Air Conditioner, Free Wi-Fi, TV, Mini Bar',
       price: 2000,
@@ -85,11 +71,13 @@ export class Rooms implements OnInit, AfterViewInit, AfterViewChecked {
     this.roomList = [...this.roomList, room];
   }
 
-  ngAfterViewInit(): void {
-    this.headerComponent.title = "Rooms View"
-  }
+  // ngAfterViewInit(): void {
+  //   this.headerComponent.title = "Rooms View"
+  //   this.headerChildrenComponent.last.title = "Last Title"
+  //   console.log(this.headerChildrenComponent, this.headerComponent)
+  // }
 
-  ngAfterViewChecked(): void {
+  // ngAfterViewChecked(): void {
     
-  }
+  // }
 }

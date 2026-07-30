@@ -1,10 +1,12 @@
 import { AfterViewInit, Component, ElementRef, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Rooms } from './rooms/rooms';
+import { Employee } from "./employee/employee";
+import { Container } from "./container/container";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Rooms],
+  imports: [RouterOutlet, Rooms, Employee, Container],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
